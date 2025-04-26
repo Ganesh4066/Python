@@ -1,0 +1,108 @@
+# Simple password check
+PASSWORD = "1234"
+
+def check_password():
+    pwd = input("Enter password to access system: ")
+    if pwd == PASSWORD:
+        print("Access granted!\n")
+        return True
+    else:
+        print("Access denied!\n")
+        return False
+
+# Validate name: alphabets and spaces only
+def valid_name(name):
+    return all(c.isalpha() or c.isspace() for c in name) and name != ""
+
+# Validate roll: digits only
+def valid_roll(roll):
+    return roll.isdigit()
+
+students = []  # list of student records
+
+def add_student():
+    roll = input("Enter roll number (digits only): ")
+    if not valid_roll(roll):
+        print("Invalid roll number! Must be digits only.\n")
+        return
+
+    roll = int(roll)
+    # Check if roll exists
+    for s in students:
+        if s[0] == roll:
+            print("Roll number already exists.\n")
+            return
+
+    name = input("Enter student name (alphabets only): ")
+    if not valid_name(name):
+        print("Invalid name! Must be alphabets and spaces only.\n")
+        return
+
+    # Courses dictionary
+    courses = {}
+    while True:
+        course = input("Enter course name (or 'done' to finish): ")
+        if course.lower() == 'done':
+            break
+        grade = input(f"Enter grade for {course}: ")
+        if not grade.isdigit():
+            print("Invalid grade! Must be a number.\n")
+            continue
+        courses[course] = int(grade)
+
+    # Store student as tuple (roll, name) and dict (courses)
+    student_info = (roll, name)
+    student_record = {'info': student_info, 'courses': courses}
+    students.append(student_record)
+    print("Student added successfully!\n")
+
+def view_students():
+    if not students:
+        print("No students found.\n")
+        return
+    for s in students:
+        roll, name = s['info']
+        print(f"Roll: {roll}, Name: {name}")
+        for c, g in s['courses'].items():
+            print(f"  {c}: {g}")
+        print("------")
+
+def list_courses():
+    course_set = set()
+    for s in students:
+        for c in s['courses']:
+            course_set.add(c)
+    if course_set:
+        print("Courses offered:")
+        for c in course_set:
+            print(c)
+    else:
+        print("No courses found.")
+    print()
+
+def main():
+    if not check_password():
+        return
+
+    while True:
+        print("1. Add Student")
+        print("2. View Students")
+        print("3. List Courses")
+        print("4. Exit")
+
+        choice = input("Enter choice: ")
+        print()
+        if choice == '1':
+            add_student()
+        elif choice == '2':
+            view_students()
+        elif choice == '3':
+            list_courses()
+        elif choice == '4':
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice, try again.\n")
+
+if __name__ == "__main__":
+    main()
